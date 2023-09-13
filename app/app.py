@@ -1,20 +1,21 @@
 from flask import Flask
 
-from celery_app import celery_app, get_task
+from conf import ML_RESULTS
+from celery_app import celery_app1, get_task
 
-app = Flask("app")
+flask_app = Flask("app")
 
-app.config['UPLOAD_FOLDER'] = 'files'
-celery_app.conf.update(app.config)
+flask_app.config['UPLOAD_FOLDER'] = ML_RESULTS
+celery_app1.conf.update(flask_app.config)
 
 
 ####### ЗАКЛИНАНИЕ, чтобы 	CELERY	 работало с	 FLASK:
-class ContextTask(celery_app.Task):
+class ContextTask(celery_app1.Task):
     def __call__(self, *args, **kwargs):
-        with app.app_context():
+        with flask_app.app_context():
             return self.run(*args, **kwargs)
 
 
-celery_app.Task = ContextTask
+celery_app1.Task = ContextTask
 ######	(взято из документации)
 

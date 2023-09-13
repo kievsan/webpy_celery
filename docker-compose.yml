@@ -16,18 +16,17 @@ services:
   celery:
     build:
       context: .
+#      dockerfile: Dockerfile.celery
     environment:
-      BACKEND: ${CELERY_BACKEND}
-      BROKER: ${CELERY_BROKER}
-    entrypoint: celery -A tasks.celery_app worker
+      CELERY_BACKEND: ${CELERY_BACKEND}
+      CELERY_BROKER: ${CELERY_BROKER}
+#    entrypoint: celery -A celery_app.celery_app1 worker -c 1
+    entrypoint: bash run_celery.sh
+    container_name: celery
     depends_on:
       - redis
     networks:
       dev_network:
     volumes:
       - ./app:/app
-
-
-
-
 

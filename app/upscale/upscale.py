@@ -6,7 +6,7 @@ from cv2 import dnn_superres
 from functools import lru_cache
 
 import os
-from app.config import ML_OBJECTS, ML_RESULTS, ML_MODEL
+from app.conf import ML_OBJECTS, ML_RESULTS, ML_MODEL
 
 
 @lru_cache
