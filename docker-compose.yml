@@ -32,3 +32,20 @@ services:
     volumes:
       - ./app:/app
 
+  app:
+    build:
+      context: .
+    environment:
+      CELERY_BROKER: "redis://db-redis:6379/1"
+      CELERY_BACKEND: "redis://db-redis:6379/2"
+    ports:
+      - "5000:5000"
+    container_name: flask_app
+    depends_on:
+      - celery
+    networks:
+      dev_network:
+        aliases:
+          - flask
+    volumes:
+      - ./app:/app
