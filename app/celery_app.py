@@ -1,11 +1,12 @@
-
 from celery import Celery
 from celery.result import AsyncResult
 
-from config import CELERY_BROKER, CELERY_BACKEND
+from app.config import CELERY_BROKER, CELERY_BACKEND
 
 
-celery_app = Celery("app", backend=CELERY_BACKEND, broker=CELERY_BROKER)
+celery_app = Celery(main="app",
+                    backend=CELERY_BACKEND,
+                    broker=CELERY_BROKER)
 
 
 def get_task(task_id: str) -> AsyncResult:
