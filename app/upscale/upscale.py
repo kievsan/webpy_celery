@@ -6,7 +6,7 @@ from cv2 import dnn_superres
 from functools import lru_cache
 
 import os
-from app.conf import ML_OBJECTS, ML_RESULTS, ML_MODEL
+from app.conf import ML_OBJECTS, ML_STORAGE, ML_MODEL
 
 
 @lru_cache
@@ -49,9 +49,10 @@ def upscale(input_path: str, output_path: str,
 
 
 def example():
+    print(ML_OBJECTS)
     result_file = upscale(
         os.path.join(ML_OBJECTS, 'lama_300px.png'),
-        os.path.join(ML_RESULTS, 'lama_600px.png')
+        os.path.join(ML_STORAGE, 'lama_600px.png')
     )
     print(f'Success\t{result_file}' if result_file else 'Sorry...')
 

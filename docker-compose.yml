@@ -30,7 +30,7 @@ services:
     networks:
       dev_network:
     volumes:
-      - ./app:/app
+      - ./app/{SELERY_STORAGE}:/app/{SELERY_STORAGE}
 
   app:
     build:
