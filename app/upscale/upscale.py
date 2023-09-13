@@ -29,17 +29,21 @@ def upscale(input_path: str, output_path: str,
         :param model_path: путь к ИИ модели
         :return:
     """
+    print('Starting to make upscale image for', input_path)
 
     try:
+        print('reading...')
         image = cv2.imread(input_path)
     except FileNotFoundError as err:
         print(err)
         return ''
 
+    print('upscaling...')
     scaler = get_model(model_path)
     result = scaler.upsample(image)
 
     try:
+        print('writing...')
         cv2.imwrite(output_path, result)
     except OSError as err:
         print(err)
