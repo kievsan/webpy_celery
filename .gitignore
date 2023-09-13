@@ -1,7 +1,7 @@
 __pycache__/
 .idea/
 venv/
-.env
+#.env
 
 *.log
 local_settings.py

@@ -1,6 +1,9 @@
 from flask import Flask
 
 from celery_tasks import celery_app, get_task
+from settings import PATH
+
+print(PATH)
 
 flask_app = Flask("app")
 
@@ -16,4 +19,8 @@ class ContextTask(celery_app.Task):
 
 celery_app.Task = ContextTask
 ######	(взято из документации)
+
+
+if __name__ == '__main__':
+    flask_app.run()
 
