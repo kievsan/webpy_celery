@@ -3,8 +3,6 @@ from flask import Flask
 from celery_tasks import celery_app, get_task
 from settings import PATH
 
-print(PATH)
-
 flask_app = Flask("app")
 
 celery_app.conf.update(flask_app.config)

@@ -22,7 +22,7 @@ services:
       CELERY_BACKEND: "redis://db-redis:6379/2"
 #      CELERY_BROKER: ${CELERY_BROKER}
 #      CELERY_BACKEND: ${CELERY_BACKEND}
-#    entrypoint: celery -A celery_app.celery_app1 worker -c 1
+#    entrypoint: celery -A celery_tasks.celery_app worker -c 2
 #    entrypoint: bash run_celery.sh
     container_name: celery
     depends_on:
@@ -30,7 +30,7 @@ services:
     networks:
       dev_network:
     volumes:
-      - ./app/{SELERY_STORAGE}:/app/{SELERY_STORAGE}
+      - ./app/${ML_PACKAGE}/${ML_STORAGE}:/app/${ML_PACKAGE}/${ML_STORAGE}
 
   app:
     build:

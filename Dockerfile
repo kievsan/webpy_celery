@@ -6,4 +6,4 @@ WORKDIR /app
 #     gcc-multilib && \
 #     pip install --no-cache-dir -r /app/requirements.txt
 RUN apt update && pip install --no-cache-dir -r /app/requirements.txt
-ENTRYPOINT bash run.sh
+ENTRYPOINT bash ./app/run.sh
