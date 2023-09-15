@@ -5,11 +5,11 @@ from functools import lru_cache
 import datetime
 import os
 
-from flask_celery.settings import ML_EXAMPLES, ML_MODEL, ML_STORAGE
+from flask_celery.settings import ML_MODEL, ML_EXAMPLES, ML_STORAGE
 
 
 @lru_cache
-def scaler(model_path: str):
+def upscaler(model_path: str = ML_MODEL):
     """
         :param model_path: путь к ИИ модели
         :return:
@@ -20,11 +20,10 @@ def scaler(model_path: str):
     return scaler
 
 
-def upscale(input_path: str, output_path: str, model_path: str) -> str:
+def upscale(input_path: str, output_path: str) -> str:
     """
         :param input_path: путь к изображению для апскейла
         :param output_path:  путь к выходному файлу
-        :param model_path: путь к ИИ модели
         :return:
     """
     print('Starting to make upscale image for', input_path)
@@ -37,7 +36,7 @@ def upscale(input_path: str, output_path: str, model_path: str) -> str:
         return ''
 
     print('upscaling...')
-    result = scaler(model_path).upsample(image)
+    result = upscaler().upsample(image)
 
     try:
         print('writing...')
@@ -49,8 +48,8 @@ def upscale(input_path: str, output_path: str, model_path: str) -> str:
     return output_path
 
 
-def example(ml_obj: str, ml_result: str, ml_model: str):
-    result_file = upscale(ml_obj, ml_result,ml_model)
+def example(ml_obj: str, ml_result: str):
+    result_file = upscale(ml_obj, ml_result)
     print(f'Success\t{result_file}' if result_file else 'Sorry...')
 
 
@@ -58,6 +57,5 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     for i in range(2):
         example(os.path.join(ML_EXAMPLES, 'lama_300px.png'),
-                os.path.join(ML_STORAGE, 'lama_600px.png'),
-                ML_MODEL)
+                os.path.join(ML_STORAGE, 'lama_600px.png'))
         print(datetime.datetime.now() - start)
