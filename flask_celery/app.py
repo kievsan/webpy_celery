@@ -1,7 +1,7 @@
 from flask import Flask
 
-from celery_app import celery_app, get_task
-import settings as conf
+from flask_celery.celery_app import celery_app, get_task
+import flask_celery.settings as conf
 
 flask_app = Flask("flask_celery")
 

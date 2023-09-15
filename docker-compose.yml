@@ -20,7 +20,7 @@ services:
     environment:
       CELERY_BROKER: ${CELERY_BROKER}
       CELERY_BACKEND: ${CELERY_BACKEND}
-#    entrypoint: celery -A celery_tasks.celery_app worker -c 2
+#    entrypoint: celery -A flask_celery.celery_app.celery_app worker -c 2
 #    entrypoint: bash run_celery.sh
     container_name: celery
     depends_on:
