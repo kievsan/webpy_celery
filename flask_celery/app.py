@@ -1,9 +1,9 @@
 from flask import Flask
 
-from celery_tasks import celery_app, get_task
+from celery_app import celery_app, get_task
 from settings import PATH
 
-flask_app = Flask("app")
+flask_app = Flask("flask_celery")
 
 celery_app.conf.update(flask_app.config)
 

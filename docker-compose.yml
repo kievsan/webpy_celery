@@ -28,7 +28,7 @@ services:
     networks:
       dev_network:
     volumes:
-      - ./app/${ML_PACKAGE}/${ML_STORAGE}:/app/${ML_PACKAGE}/${ML_STORAGE}
+      - ./flask_celery/${ML_PACKAGE}/${ML_STORAGE}:/app/flask_celery/${ML_PACKAGE}/${ML_STORAGE}
 
   app:
     build:
@@ -46,4 +46,4 @@ services:
         aliases:
           - flask
     volumes:
-      - ./app:/app
+      - ./flask_celery:/app/flask_celery

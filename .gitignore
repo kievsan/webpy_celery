@@ -14,4 +14,4 @@ ENV/
 env.bak/
 venv.bak/
 
-app/upscale/storage/
+flask_celery/upscale/storage/
