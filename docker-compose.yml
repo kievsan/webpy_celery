@@ -4,31 +4,70 @@ networks:
   dev_network:
 
 services:
-  redis:
-    image: redis:7.0.0-alpine3.15
+
+  upscale_postgres:
+    image: postgres:14.3-alpine3.16
+    container_name: upscale_pg_db
+    environment:
+      POSTGRES_DB: ${PG_NAME}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports:
-      - "6379:6379"
+      - "${PG_HOST_PORT}:${PG_PORT}"
     networks:
       dev_network:
         aliases:
-          - db-redis
+          - postgres_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_NAME}"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G
+
+  redis:
+    image: redis:7.0.0-alpine3.15
+    ports:
+      - "${REDIS_HOST_PORT}:${REDIS_PORT}"
+    networks:
+      dev_network:
+        aliases:
+          - redis_db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G
 
   celery:
     build:
       context: .
       dockerfile: Dockerfile.celery
     environment:
+      PG_DSN: ${PG_DSN}
       CELERY_BROKER: ${CELERY_BROKER}
       CELERY_BACKEND: ${CELERY_BACKEND}
 #    entrypoint: celery -A flask_celery.celery_app.celery_app worker -c 2
 #    entrypoint: bash run_celery.sh
     container_name: celery
     depends_on:
-      - redis
+      upscale_postgres:
+        condition: service_healthy
     networks:
       dev_network:
     volumes:
-      - ./${CELERY_STORAGE}
+      - .${CELERY_STORAGE}:/app/${CELERY_STORAGE}
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G
 
   app:
     build:

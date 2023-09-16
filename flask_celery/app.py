@@ -1,7 +1,7 @@
 from flask import Flask
 
 from flask_celery.celery_app import celery_app, get_task
-import flask_celery.settings as conf
+from flask_celery import views
 
 flask_app = Flask("flask_celery")
 
@@ -19,6 +19,25 @@ celery_app.Task = ContextTask
 ######	(взято из документации)
 
 
+# rules
+
+flask_app.add_url_rule('/',
+                 view_func=views.main_view,
+                 methods=['GET'])
+
+flask_app.add_url_rule('/upscale',
+                 view_func=views.TaskView.as_view('task_add'),
+                 methods=['POST'])
+
+flask_app.add_url_rule('/tasks/<task_id>',
+                 view_func=views.TaskView.as_view('task_get'),
+                 methods=['GET'])
+
+flask_app.add_url_rule('/processed/<file>',
+                 view_func=views.ImageView.as_view('image_get'),
+                 methods=['GET'])
+
+
 if __name__ == '__main__':
-    flask_app.run()
+    flask_app.run('127.0.0.1', port=5000)
 
