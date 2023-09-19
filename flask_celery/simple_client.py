@@ -14,7 +14,7 @@ def accept_simple_result(rule: str, task_id: str) -> bool:
     if response_status == 'SUCCESS':
         print(f"{resp_data.get('phrase')}\t-->\t{resp_data.get('pun')}")
     elif response_status == 'FAILURE':
-        print(f"{resp_data.get('phrase')}\t-->\tЧто-то пошло не так")
+        print("Что-то пошло не так")
     return response_status in ['SUCCESS', 'FAILURE']
 
 
@@ -37,6 +37,8 @@ def start_requests(rule: str, msg: str, ddos: int) -> list[str]:
 test_request = 'http://127.0.0.1:5000/simple/'
 request_number = 10
 checklist = start_requests(test_request, 'simple greeting', request_number)
+
+print(f'\n{len(checklist)} задач в очереди\n')
 
 start = datetime.datetime.now()
 while True:
