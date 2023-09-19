@@ -21,6 +21,7 @@ def accept_simple_result(rule: str, task_id: str) -> bool:
 def check_tasks(rule: str, func, checklist: list[str]) -> list[str]:
     return list(id for id in checklist if not (func(rule, id)))
 
+
 def start_requests(rule: str, msg: str, ddos: int) -> list[str]:
     checklist = list()
     for request_number in range(ddos):

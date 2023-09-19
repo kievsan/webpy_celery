@@ -97,14 +97,6 @@ class TaskView(MethodView):
         redis_dict.mset({task.id: upscale_image})
         return jsonify({'task_id': task.id})
 
-    def _get_image(self):
-        image = request.files.get('image')
-        filename = image.filename
-        extension = filename[filename.rfind('.'):]
-        file_name = uuid.uuid4()
-        image.filename = f'{file_name}{extension}'
-        return image
-
 
 class ImageView(MethodView):
     def get(self, file):
