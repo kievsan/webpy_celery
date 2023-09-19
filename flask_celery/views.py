@@ -38,8 +38,9 @@ class SimpleView(MethodView):
         task = get_task(task_id)
         status = task.status
         data = {'status': status}
+        phrase = redis_dict.get(task_id).decode()
+        print(phrase)
         if status == 'SUCCESS':
-            phrase = redis_dict.get(task_id)
             data.update({'phrase': phrase})
             data.update({'pun': task.result})
         return jsonify(data)
