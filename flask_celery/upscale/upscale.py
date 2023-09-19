@@ -1,9 +1,8 @@
 import base64
 
-import cv2
-import numpy
-# import numpy as np
-# from cv2 import dnn_superres
+import cv2 as cv2
+from cv2 import dnn_superres
+import numpy as np
 
 from functools import lru_cache
 import datetime
@@ -18,36 +17,35 @@ def upscaler(model_path: str = ML_MODEL):
         :param model_path: путь к ИИ модели
         :return:
     """
-    scaler = cv2.dnn_superres.DnnSuperResImpl.create()
+    print('start def upscale.upscaler')  #############
+    scaler = dnn_superres.DnnSuperResImpl.create()
     scaler.readModel(model_path)
     scaler.setModel('edsr', 2)
     return scaler
 
 
-def imread(image: str, mode='server') -> numpy.array:
+def imread(image: str, mode='server') -> np.array:
     if mode == 'local':
+        print(f'reading...{image}')
         img = cv2.imread(image)
     else:
-        nparr = numpy.fromstring(image, numpy.uint8)
+        nparr = np.fromstring(image, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
 
 
-def upscale_on_server(img: str, output_path: str) -> numpy.array:
+def upscale_on_server(img: str, output_path: str):
     image = imread(img)
     print(f'upscaling...')
     result = upscaler().upsample(image)
     print(f'writing...{output_path}')
     cv2.imwrite(output_path, result)
-    return result
 
 
 def upscale(input_path: str, output_path: str):
     try:
         with open(input_path, 'rb') as img:
-            print(f'reading...{input_path}')
-            result = upscale_on_server(img.read().decode())
-
+            upscale_on_server(img.read().decode(), output_path)
     except FileNotFoundError as err:
         print(f'error...{output_path}\t{err}')
 
@@ -58,7 +56,13 @@ def upscale_example(input_path: str, output_path: str) -> str:
         :param output_path:  путь к выходному файлу
         :return:
     """
+
+    # image = cv2.imread(input_path)
+    # result = upscaler().upsample(image)
+    # cv2.imwrite(output_path, result)
+
     try:
+        print(f'start upscaling...{output_path}')
         image = imread(input_path, mode='local')
     except FileNotFoundError as err:
         print(err)
@@ -67,7 +71,7 @@ def upscale_example(input_path: str, output_path: str) -> str:
     result = upscaler().upsample(image)
 
     try:
-        print('writing...')
+        print(f'writing...{output_path}')
         cv2.imwrite(output_path, result)
     except OSError as err:
         print(err)
@@ -76,8 +80,8 @@ def upscale_example(input_path: str, output_path: str) -> str:
     return output_path
 
 
-def local_example(ml_file_path: str, ml_result: str):
-    result_file = upscale_example(ml_file_path, ml_result)
+def local_example(file_path: str, upscale_path: str):
+    result_file = upscale_example(file_path, upscale_path)
     print(f'Success\t{result_file}' if result_file else 'Sorry...')
 
 

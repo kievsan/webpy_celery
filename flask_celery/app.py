@@ -1,14 +1,15 @@
 from flask import Flask
 
-from flask_celery.celery_app import celery_app, get_task
-from flask_celery import views
+from flask_celery.celery_app import celery_app
+import flask_celery.views as views
 
 flask_app = Flask("flask_celery")
 
+flask_app.config['UPLOAD_FOLDER'] = 'files'
 celery_app.conf.update(flask_app.config)
 
 
-####### ЗАКЛИНАНИЕ, чтобы 	CELERY	 работало с	 FLASK:
+####### чтобы 	CELERY	 работало с	 FLASK:
 class ContextTask(celery_app.Task):
     def __call__(self, *args, **kwargs):
         with flask_app.app_context():
@@ -25,7 +26,19 @@ flask_app.add_url_rule('/',
                  view_func=views.main_view,
                  methods=['GET'])
 
-flask_app.add_url_rule('/upscale',
+flask_app.add_url_rule('/simple/',
+                 view_func=views.SimpleView.as_view('simple_add'),
+                 methods=['POST'])
+
+flask_app.add_url_rule('/simple/<task_id>',
+                 view_func=views.SimpleView.as_view('simple_get'),
+                 methods=['GET'])
+
+flask_app.add_url_rule('/example/',
+                 view_func=views.ExampleView.as_view('example_add'),
+                 methods=['POST'])
+
+flask_app.add_url_rule('/upscale/',
                  view_func=views.TaskView.as_view('task_add'),
                  methods=['POST'])
 

@@ -13,15 +13,20 @@ PATH_TO_IMAGE = 'upscale/examples/lama_300px.png'
 
 
 with open(PATH_TO_IMAGE, 'rb') as image:
-    response = requests.post('http://127.0.0.1:5000/upscale', files={'image': image}).json()
-    task_id = response['task_id']
+    response = requests.post('http://127.0.0.1:5000/upscale',
+                             files={
+                                 'image': image
+                             })
+    resp_data = response.json()
+    task_id = resp_data['task_id']
+    print(resp_data)
 
     while True:
-        time.sleep(1)
+        time.sleep(2)
         response = requests.get(f'http://127.0.0.1:5000/tasks/{task_id}')
         status_code = response.status_code
         response = response.json()
-        print(response)
+        print(status_code, response)
         assert status_code == 200
         response_status = response['status']
         if response_status == 'SUCCESS':

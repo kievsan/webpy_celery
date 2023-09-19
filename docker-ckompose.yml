@@ -32,9 +32,11 @@ services:
           memory: 1G
 
   redis:
+#    image: redis
     image: redis:7.0.0-alpine3.15
     ports:
-      - "${REDIS_HOST_PORT}:${REDIS_PORT}"
+      - "6379:6379"
+#      - "${REDIS_HOST_PORT}:${REDIS_PORT}"
     networks:
       dev_network:
         aliases:
@@ -43,7 +45,7 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: 1G
+          memory: 512M
 
   celery:
     build:
@@ -51,14 +53,17 @@ services:
       dockerfile: Dockerfile.celery
     environment:
       PG_DSN: ${PG_DSN}
-      CELERY_BROKER: ${CELERY_BROKER}
-      CELERY_BACKEND: ${CELERY_BACKEND}
+      CELERY_BROKER: "redis://redis_db:6379/1"
+      CELERY_BACKEND: "redis://redis_db:6379/2"
+#      CELERY_BROKER: ${CELERY_BROKER}
+#      CELERY_BACKEND: ${CELERY_BACKEND}
 #    entrypoint: celery -A flask_celery.celery_app.celery_app worker -c 2
 #    entrypoint: bash run_celery.sh
     container_name: celery
     depends_on:
-      upscale_postgres:
-        condition: service_healthy
+      - redis
+#      upscale_postgres:
+#        condition: service_healthy
     networks:
       dev_network:
     volumes:
@@ -67,12 +72,13 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: 1G
+          memory: 512M
 
   app:
     build:
       context: .
     environment:
+      REDIS_HOST: redis_db
       CELERY_BROKER: ${CELERY_BROKER}
       CELERY_BACKEND: ${CELERY_BACKEND}
     ports:
