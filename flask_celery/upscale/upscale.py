@@ -1,5 +1,3 @@
-import base64
-
 import cv2 as cv2
 from cv2 import dnn_superres
 import numpy as np
@@ -8,7 +6,7 @@ from functools import lru_cache
 import datetime
 import os
 
-from flask_celery.settings import ML_PACKAGE, ML_MODEL, ML_EXAMPLES, ML_STORAGE
+from flask_celery.settings import ML_MODEL, ML_EXAMPLES, ML_STORAGE
 
 
 @lru_cache
@@ -55,36 +53,6 @@ def upscale(input_path: str, output_path: str):
             upscale_on_server(img.read().decode(), output_path)
     except FileNotFoundError as err:
         print(f'error...{output_path}\t{err}')
-
-
-# def upscale_example(input_path: str, output_path: str) -> str:
-#     """
-#         :param input_path: путь к изображению для апскейла
-#         :param output_path:  путь к выходному файлу
-#         :return:
-#     """
-#
-#     # image = cv2.imread(input_path)
-#     # result = upscaler().upsample(image)
-#     # cv2.imwrite(output_path, result)
-#
-#     try:
-#         print(f'start upscaling...{output_path}')
-#         image = imread(input_path, mode='local')
-#     except FileNotFoundError as err:
-#         print(err)
-#         return ''
-#
-#     result = upscaler().upsample(image)
-#
-#     try:
-#         print(f'writing...{output_path}')
-#         cv2.imwrite(output_path, result)
-#     except OSError as err:
-#         print(err)
-#         return ''
-#
-#     return output_path
 
 
 def upscale_example(input_path: str,

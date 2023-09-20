@@ -5,8 +5,8 @@ import flask_celery.views as views
 
 flask_app = Flask("flask_celery")
 flask_app.config['UPLOAD_FOLDER'] = 'files'
-celery_app.conf.update(flask_app.config)
 
+celery_app.conf.update(flask_app.config)
 
 ####### чтобы 	CELERY	 работало с	 FLASK:
 class ContextTask(celery_app.Task):

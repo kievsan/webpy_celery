@@ -10,14 +10,10 @@ from flask_celery.celery_stuff.app import get_task_result
 import flask_celery.celery_stuff.tasks as celery
 import flask_celery.settings as conf
 
-# from flask_celery.settings import REDIS_HOST, CELERY_STORAGE, ML_PACKAGE, ML_EXAMPLES
-
 
 # redis storage
 
 redis_dict = redis.Redis(host='127.0.0.1', port=6380)
-
-
 # redis_dict = redis.Redis(host=conf.REDIS_HOST)
 
 
@@ -47,14 +43,6 @@ class SimpleView(MethodView):
 
 
 class ExampleView(MethodView):
-    # def post(self):
-    #     print('start def ExampleView.post')  #############
-    #     input_path, upscale_path = self.get_path('filename')
-    #     print(input_path, '\n', upscale_path)  ##############
-    #     task = celery.upscale_example_task.delay(input_path, upscale_path)
-    #     redis_dict.mset({task.id: upscale_path})
-    #     return jsonify({'task_id': task.id})
-
     def post(self):
         print('start def ExampleView.post')  #############
         input_path, upscale_filename = self.get_path('filename')
@@ -71,14 +59,10 @@ class ExampleView(MethodView):
         name = filename[:filename.rfind(extension)]
         unic = uuid.uuid4()
         upscale_filename = f'upscale_{name}_{unic}{extension}'
-        # upscale_path = os.path.join(conf.PATH,
-        #                             conf.ML_PACKAGE, conf.ML_STORAGE,
-        #                             upscale_filename)
         input_path = os.path.join(conf.PATH,
                                   conf.ML_PACKAGE, conf.ML_EXAMPLES,
                                   filename)
         return input_path, upscale_filename
-        # return input_path, upscale_path
 
 
 class TaskView(MethodView):
@@ -99,11 +83,8 @@ class TaskView(MethodView):
         unic = uuid.uuid4()
         upscale_filename = f'upscale_{name}_{unic}{extension}'
         upscale_image = os.path.join(conf.CELERY_STORAGE, upscale_filename)
-        # image.filename = upscale_filename
         img = base64.b64encode(image.read())
         image_str = img.decode()
-        # image_str = image.read().decode()
-        # task = upscale_example_task.delay(image_str, upscale_image)
         task = celery.upscale_image_task.delay(image_str, upscale_image)
         redis_dict.mset({task.id: upscale_image})
         return jsonify({'task_id': task.id})

@@ -1,16 +1,11 @@
 from celery import Celery
 from celery.result import AsyncResult
 
-# from flask_celery.settings import CELERY_BROKER, CELERY_BACKEND
-
 celery_app = Celery("flask_celery.celery_stuff.app",
                     backend="redis://127.0.0.1:6380/2",
                     broker="redis://127.0.0.1:6380/1",
                     include=['flask_celery.celery_stuff.tasks']
                     )
-                    # backend=CELERY_BACKEND,  # os.getenv('CELERY_BACKEND'),
-                    # broker=CELERY_BROKER)  # os.getenv('CELERY_BROKER'),
-
 # celery_app.autodiscover_tasks('tasks')
 
 
