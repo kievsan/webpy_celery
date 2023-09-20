@@ -26,9 +26,9 @@ def main_view():
 
 class SimpleView(MethodView):
     def post(self):
-        print('start def SimpleView.post') #############
         msg = request.json.get('message')
         running_task = celery.simple_task.delay(msg)
+        print('start def SimpleView.post:\t', running_task.backend) #############
         redis_dict.mset({running_task.id: msg})
         return jsonify({'task_id': running_task.id})
 

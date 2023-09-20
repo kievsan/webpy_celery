@@ -16,7 +16,7 @@ upscale_example_task = celery_app.task(
 )
 
 
-@celery_app.task(name='flask_celery.celery_stuff.tasks.simple')
+@celery_app.task(name='flask_celery.celery_stuff.tasks.simple', track_started=True)
 def simple_task(msg: str):
     print('START SIMPLE example')
     words = msg.split()
