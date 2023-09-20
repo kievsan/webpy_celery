@@ -11,6 +11,8 @@ celery_app = Celery("flask_celery.celery_stuff.app",
                     # backend=CELERY_BACKEND,  # os.getenv('CELERY_BACKEND'),
                     # broker=CELERY_BROKER)  # os.getenv('CELERY_BROKER'),
 
+# celery_app.autodiscover_tasks('tasks')
+
 
 def get_task_result(task_id: str) -> AsyncResult:
     print('start def celery_app.get_task')  #############
