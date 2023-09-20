@@ -4,7 +4,6 @@ from flask_celery.celery_app import celery_app1
 import flask_celery.views as views
 
 flask_app = Flask("flask_celery")
-
 flask_app.config['UPLOAD_FOLDER'] = 'files'
 celery_app1.conf.update(flask_app.config)
 

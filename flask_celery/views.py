@@ -37,9 +37,9 @@ class SimpleView(MethodView):
         print('start def SimpleView.get') #############
         result = get_task_result(task_id)
         status = result.status
-        data = {'status': status}
         phrase = redis_dict.get(task_id).decode()
         print(phrase)
+        data = {'task': phrase, 'status': status}
         if status == 'SUCCESS':
             data.update({'phrase': phrase})
             data.update({'pun': result.get()})
