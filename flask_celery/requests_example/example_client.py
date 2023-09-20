@@ -12,7 +12,7 @@ task_id = resp_data['task_id']
 print(response.status_code, resp_data)
 
 while True:
-    time.sleep(1)
+    time.sleep(2)
     response = requests.get(f'http://127.0.0.1:5000/tasks/{task_id}')
     status_code = response.status_code
     resp_data = response.json()
