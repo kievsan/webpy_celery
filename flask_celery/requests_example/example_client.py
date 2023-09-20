@@ -23,8 +23,8 @@ while True:
     assert status_code == 200
     response_status = resp_data.get('status')
     if response_status == 'SUCCESS':
-        url = resp_data.get('link')
-        image = requests.get(url)
+        file_request = resp_data.get('link')
+        image = requests.get(file_request)
         status_code = image.status_code
         assert status_code == 200
         break

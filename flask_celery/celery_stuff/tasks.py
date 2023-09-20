@@ -12,7 +12,8 @@ upscale_image_task = celery_app.task(
 
 upscale_example_task = celery_app.task(
     upscale_image.upscale_example,
-    name='flask_celery.celery_stuff.tasks.upscale_example'
+    name='flask_celery.celery_stuff.tasks.upscale_example',
+    track_started=True
 )
 
 

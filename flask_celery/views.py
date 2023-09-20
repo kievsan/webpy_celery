@@ -47,12 +47,20 @@ class SimpleView(MethodView):
 
 
 class ExampleView(MethodView):
+    # def post(self):
+    #     print('start def ExampleView.post')  #############
+    #     input_path, upscale_path = self.get_path('filename')
+    #     print(input_path, '\n', upscale_path)  ##############
+    #     task = celery.upscale_example_task.delay(input_path, upscale_path)
+    #     redis_dict.mset({task.id: upscale_path})
+    #     return jsonify({'task_id': task.id})
+
     def post(self):
         print('start def ExampleView.post')  #############
-        input_path, upscale_path = self.get_path('filename')
-        print(input_path, '\n', upscale_path)  ##############
-        task = celery.upscale_example_task.delay(input_path, upscale_path)
-        redis_dict.mset({task.id: upscale_path})
+        input_path, upscale_filename = self.get_path('filename')
+        print(input_path, '\n-->\t', upscale_filename)  ##############
+        task = celery.upscale_example_task.delay(input_path, upscale_filename)
+        redis_dict.mset({task.id: upscale_filename})
         return jsonify({'task_id': task.id})
 
     def get_path(self, field):
@@ -63,20 +71,21 @@ class ExampleView(MethodView):
         name = filename[:filename.rfind(extension)]
         unic = uuid.uuid4()
         upscale_filename = f'upscale_{name}_{unic}{extension}'
-        upscale_path = os.path.join(conf.PATH,
-                                    conf.ML_PACKAGE, conf.ML_STORAGE,
-                                    upscale_filename)
+        # upscale_path = os.path.join(conf.PATH,
+        #                             conf.ML_PACKAGE, conf.ML_STORAGE,
+        #                             upscale_filename)
         input_path = os.path.join(conf.PATH,
                                   conf.ML_PACKAGE, conf.ML_EXAMPLES,
                                   filename)
-        return input_path, upscale_path
+        return input_path, upscale_filename
+        # return input_path, upscale_path
 
 
 class TaskView(MethodView):
     def get(self, task_id):
         print('start def TaskView.get')  #############
-        task = get_task_result(task_id)
-        status = task.status
+        result = get_task_result(task_id)
+        status = result.status
         message = {'status': status}
         if status == 'SUCCESS':
             file_name = redis_dict.get(task_id)
@@ -102,4 +111,6 @@ class TaskView(MethodView):
 
 class ImageView(MethodView):
     def get(self, file):
-        return send_file(os.path.join(conf.CELERY_STORAGE, file), mimetype='image/gif')
+        return send_file(os.path.join(
+            conf.CELERY_STORAGE, file
+        ), mimetype='image/gif')
