@@ -9,6 +9,8 @@ load_dotenv()
 
 PATH = os.path.join(os.getcwd())
 
+APP_PACKAGE= os.getenv("APP_PACKAGE")
+
 ML_PACKAGE = os.getenv("ML_PACKAGE")
 ML_STORAGE = os.getenv("ML_STORAGE")
 ML_EXAMPLES = os.getenv("ML_OBJECTS_FOLDER")
@@ -36,3 +38,5 @@ CELERY_BROKER = f'{REDIS_DSN}/{REDIS_BROKER_DB}'
 CELERY_BACKEND = f'{REDIS_DSN}/{REDIS_BACKEND_DB}'
 # CELERY_BACKEND = f"db+{PG_DSN}"
 CELERY_STORAGE = os.path.join(ML_PACKAGE, ML_STORAGE)
+
+STORAGE = os.path.join(PATH, APP_PACKAGE, ML_PACKAGE, ML_STORAGE)

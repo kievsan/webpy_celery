@@ -6,6 +6,7 @@ from functools import lru_cache
 import datetime
 import os
 
+import flask_celery.settings as conf
 from flask_celery.settings import ML_MODEL, ML_EXAMPLES, ML_STORAGE
 
 
@@ -57,7 +58,7 @@ def upscale(input_path: str, output_path: str):
 
 def upscale_example(input_path: str,
                     output_filename: str,
-                    storage = 'files') -> str:
+                    storage = conf.STORAGE) -> str:
     """
         :param input_path: путь к изображению для апскейла
         :param output_filename:  имя выходного файлу
@@ -68,8 +69,9 @@ def upscale_example(input_path: str,
     # result = upscaler().upsample(image)
     # cv2.imwrite(output_path, result)
 
+    print(f'start upscaling...{output_filename}')
+
     try:
-        print(f'start upscaling...{output_filename}')
         image = imread(input_path, mode='local')
     except FileNotFoundError as err:
         print(err)
@@ -77,13 +79,18 @@ def upscale_example(input_path: str,
 
     result = upscaler().upsample(image)
 
+    storage = storage if storage else ML_STORAGE
+    output_path = os.path.join(storage, output_filename)
+    print(f'writing...{output_path}')
+
     try:
-        output_path = os.path.join(storage, output_filename)
-        print(f'writing...{output_path}')
         cv2.imwrite(output_path, result)
     except OSError as err:
         print(err)
         return ''
+
+    assert os.path.exists(output_path)
+    print('SUCCESS: file has been writed!')
 
     return output_path
 

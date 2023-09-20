@@ -82,16 +82,18 @@ class TaskView(MethodView):
         extension = image.filename[image.filename.rfind('.'):]
         unic = uuid.uuid4()
         upscale_filename = f'upscale_{name}_{unic}{extension}'
-        upscale_image = os.path.join(conf.CELERY_STORAGE, upscale_filename)
+        # upscale_image = os.path.join(conf.CELERY_STORAGE, upscale_filename)
         img = base64.b64encode(image.read())
         image_str = img.decode()
-        task = celery.upscale_image_task.delay(image_str, upscale_image)
-        redis_dict.mset({task.id: upscale_image})
+        task = celery.upscale_image_task.delay(image_str, upscale_filename)
+        redis_dict.mset({task.id: upscale_filename})
         return jsonify({'task_id': task.id})
 
 
 class ImageView(MethodView):
     def get(self, file):
-        return send_file(os.path.join(
-            conf.CELERY_STORAGE, file
-        ), mimetype='image/gif')
+        file_path = os.path.join(os.path.join(
+            os.getcwd()), conf.CELERY_STORAGE, file)
+        print('start def ImageView.get:\t', file_path)  #############
+        assert os.path.exists(file_path)
+        return send_file(file_path, mimetype='image/gif')
