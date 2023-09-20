@@ -74,7 +74,7 @@ services:
           cpus: "0.5"
           memory: 512M
 
-  app:
+  web_server:
     build:
       context: .
     environment:
