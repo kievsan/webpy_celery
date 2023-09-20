@@ -6,10 +6,9 @@ from flask import jsonify, request, send_file
 from flask.views import MethodView
 import redis
 
-from flask_celery.celery_app import get_task_result
-import flask_celery.celery_tasks as celery
+from flask_celery.celery_stuff.app import get_task_result
+import flask_celery.celery_stuff.tasks as celery
 import flask_celery.settings as conf
-# from flask_celery.celery_tasks import upscale_image_task, upscale_example_task
 # from flask_celery.settings import REDIS_HOST, CELERY_STORAGE, ML_PACKAGE, ML_EXAMPLES
 
 
