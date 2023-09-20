@@ -4,7 +4,7 @@ import time
 
 
 def accept_simple_result(rule: str, task_id: str) -> bool:
-    time.sleep(1)
+    time.sleep(0.5)
     response = requests.get(f'{rule}{task_id}')
     status_code = response.status_code
     resp_data = response.json()
