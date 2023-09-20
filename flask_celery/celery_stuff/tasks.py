@@ -6,15 +6,15 @@ from flask_celery.celery_stuff.app import celery_app
 
 upscale_image_task = celery_app.task(
     upscale_image.upscale_on_server,
-    name='celery_tasks.upscale_image'
+    name='tasks.upscale_image'
 )
 
 upscale_example_task = celery_app.task(
     upscale_image.upscale_example,
-    name='celery_tasks.upscale_example'
+    name='tasks.upscale_example'
 )
 
-@celery_app.task(name='celery_tasks.simple')
+@celery_app.task(name='tasks.simple')
 def simple_task(msg: str):
     print('START SIMPLE example')
     words = msg.split()
