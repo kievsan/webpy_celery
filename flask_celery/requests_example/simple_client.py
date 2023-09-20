@@ -6,6 +6,8 @@ import time
 test_request = 'http://127.0.0.1:5000/simple/'
 request_number = 10
 task_sleep = '5 сек'
+header = f'\nЦЕЛЬ:\t{request_number} задач в очереди\n' \
+         f'\n\tДлительность каждой задачи:\tчуть больше {task_sleep}\n'
 
 def accept_simple_result(rule: str, task_id: str) -> bool:
     time.sleep(0.2)
@@ -39,8 +41,7 @@ def start_requests(rule: str, msg: str, ddos: int) -> list[str]:
     return checklist
 
 
-print(f'\nЦЕЛЬ:\t{request_number} задач в очереди\n')
-print(f'\tДлительность каждой задачи:\tчуть больше {task_sleep}\n')
+print(header)
 checklist = start_requests(test_request, 'simple greeting', request_number)
 
 print(f'\n{len(checklist)} задач в очереди\n')
