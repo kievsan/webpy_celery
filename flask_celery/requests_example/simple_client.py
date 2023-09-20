@@ -3,6 +3,10 @@ import datetime
 import time
 
 
+test_request = 'http://127.0.0.1:5000/simple/'
+request_number = 10
+task_sleep = '5 сек'
+
 def accept_simple_result(rule: str, task_id: str) -> bool:
     time.sleep(0.5)
     response = requests.get(f'{rule}{task_id}')
@@ -35,8 +39,8 @@ def start_requests(rule: str, msg: str, ddos: int) -> list[str]:
     return checklist
 
 
-test_request = 'http://127.0.0.1:5000/simple/'
-request_number = 10
+print(f'\nЦЕЛЬ:\t{request_number} задач в очереди\n')
+print(f'\tДлительность каждой задачи:\tчуть больше {task_sleep}\n')
 checklist = start_requests(test_request, 'simple greeting', request_number)
 
 print(f'\n{len(checklist)} задач в очереди\n')
