@@ -6,7 +6,7 @@ from flask import jsonify, request, send_file
 from flask.views import MethodView
 import redis
 
-from flask_celery.celery_app import get_task
+from flask_celery.celery_app import get_task_result
 import flask_celery.celery_tasks as celery
 import flask_celery.settings as conf
 # from flask_celery.celery_tasks import upscale_image_task, upscale_example_task
@@ -29,20 +29,20 @@ class SimpleView(MethodView):
     def post(self):
         print('start def SimpleView.post') #############
         msg = request.json.get('message')
-        task = celery.simple_task.delay(msg)
-        redis_dict.mset({task.id: msg})
-        return jsonify({'task_id': task.id})
+        running_task = celery.simple_task.delay(msg)
+        redis_dict.mset({running_task.id: msg})
+        return jsonify({'task_id': running_task.id})
 
     def get(self, task_id):
         print('start def SimpleView.get') #############
-        task = get_task(task_id)
-        status = task.status
+        result = get_task_result(task_id)
+        status = result.status
         data = {'status': status}
         phrase = redis_dict.get(task_id).decode()
         print(phrase)
         if status == 'SUCCESS':
             data.update({'phrase': phrase})
-            data.update({'pun': task.result})
+            data.update({'pun': result.get()})
         return jsonify(data)
 
 
@@ -75,7 +75,7 @@ class ExampleView(MethodView):
 class TaskView(MethodView):
     def get(self, task_id):
         print('start def TaskView.get') #############
-        task = get_task(task_id)
+        task = get_task_result(task_id)
         status = task.status
         message = {'status': status}
         if status == 'SUCCESS':
