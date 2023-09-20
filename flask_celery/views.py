@@ -37,9 +37,8 @@ class SimpleView(MethodView):
         print('start def SimpleView.get:\t', phrase) #############
         result = get_task_result(task_id)
         status = result.status
-        data = {'task': phrase, 'status': status}
+        data = {'phrase': phrase, 'status': status}
         if status == 'SUCCESS':
-            data.update({'phrase': phrase})
             data.update({'pun': result.get()})
         return jsonify(data)
 
