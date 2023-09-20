@@ -4,7 +4,8 @@ import requests
 import datetime
 import time
 
-response = requests.post('http://127.0.0.1:5000/example/',
+server = 'http://127.0.0.1:5000'
+response = requests.post(f'{server}/example/',
     json={
         "filename": "lama_300px.png"
     })
@@ -15,7 +16,7 @@ print(response.status_code, resp_data)
 
 while True:
     time.sleep(2)
-    response = requests.get(f'http://127.0.0.1:5000/tasks/{task_id}')
+    response = requests.get(f'{server}/tasks/{task_id}')
     status_code = response.status_code
     resp_data = response.json()
     print(status_code, resp_data)

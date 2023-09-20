@@ -9,12 +9,15 @@ import redis
 from flask_celery.celery_stuff.app import get_task_result
 import flask_celery.celery_stuff.tasks as celery
 import flask_celery.settings as conf
+
 # from flask_celery.settings import REDIS_HOST, CELERY_STORAGE, ML_PACKAGE, ML_EXAMPLES
 
 
 # redis storage
 
 redis_dict = redis.Redis(host='127.0.0.1', port=6380)
+
+
 # redis_dict = redis.Redis(host=conf.REDIS_HOST)
 
 
@@ -28,13 +31,13 @@ class SimpleView(MethodView):
     def post(self):
         msg = request.json.get('message')
         running_task = celery.simple_task.delay(msg)
-        print('start def SimpleView.post:\t', running_task.backend) #############
+        print('start def SimpleView.post:\t', running_task.backend)  #############
         redis_dict.mset({running_task.id: msg})
         return jsonify({'task_id': running_task.id})
 
     def get(self, task_id):
         phrase = redis_dict.get(task_id).decode()
-        print('start def SimpleView.get:\t', phrase) #############
+        print('start def SimpleView.get:\t', phrase)  #############
         result = get_task_result(task_id)
         status = result.status
         data = {'phrase': phrase, 'status': status}
@@ -45,15 +48,15 @@ class SimpleView(MethodView):
 
 class ExampleView(MethodView):
     def post(self):
-        print('start def ExampleView.post') #############
+        print('start def ExampleView.post')  #############
         input_path, upscale_path = self.get_path('filename')
-        print(input_path, '\n', upscale_path) ####
+        print(input_path, '\n', upscale_path)  ##############
         task = celery.upscale_example_task.delay(input_path, upscale_path)
         redis_dict.mset({task.id: upscale_path})
         return jsonify({'task_id': task.id})
 
     def get_path(self, field):
-        print('start def ExampleView.get_path') #############
+        print('start def ExampleView.get_path')  #############
         filename = request.json.get(field)
         extension = '.'
         extension += filename.split(extension)[-1]
@@ -71,7 +74,7 @@ class ExampleView(MethodView):
 
 class TaskView(MethodView):
     def get(self, task_id):
-        print('start def TaskView.get') #############
+        print('start def TaskView.get')  #############
         task = get_task_result(task_id)
         status = task.status
         message = {'status': status}
@@ -100,8 +103,3 @@ class TaskView(MethodView):
 class ImageView(MethodView):
     def get(self, file):
         return send_file(os.path.join(conf.CELERY_STORAGE, file), mimetype='image/gif')
-
-
-
-
-

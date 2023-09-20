@@ -8,7 +8,7 @@ from functools import lru_cache
 import datetime
 import os
 
-from flask_celery.settings import ML_MODEL, ML_EXAMPLES, ML_STORAGE
+from flask_celery.settings import ML_PACKAGE, ML_MODEL, ML_EXAMPLES, ML_STORAGE
 
 
 @lru_cache
@@ -17,10 +17,16 @@ def upscaler(model_path: str = ML_MODEL):
         :param model_path: путь к ИИ модели
         :return:
     """
-    print('start def upscale.upscaler')  #############
+    ml_model = os.path.join(os.path.dirname(__file__), model_path)
+    model_path = ml_model if os.path.exists(ml_model) else ML_MODEL
+    print(f'start def upscale.upscaler, model:\t{model_path}')  #############
     scaler = dnn_superres.DnnSuperResImpl.create()
-    scaler.readModel(model_path)
-    scaler.setModel('edsr', 2)
+    try:
+        scaler.readModel(model_path)
+        scaler.setModel('edsr', 2)
+    except Exception as err:
+        print(f'error...{model_path}\n{err}')
+        scaler = ''
     return scaler
 
 
