@@ -8,11 +8,11 @@ request_number = 10
 task_sleep = '5 сек'
 
 def accept_simple_result(rule: str, task_id: str) -> bool:
-    time.sleep(0.5)
+    time.sleep(0.2)
     response = requests.get(f'{rule}{task_id}')
     status_code = response.status_code
     resp_data = response.json()
-    print(status_code, resp_data)       ######################
+    # print(status_code, resp_data)       ######################
     assert status_code == 200
     response_status = resp_data.get('status')
     if response_status == 'SUCCESS':
@@ -34,8 +34,8 @@ def start_requests(rule: str, msg: str, ddos: int) -> list[str]:
         resp_data = response.json()
         task_id = resp_data.get('task_id')
         checklist.append(task_id)
-        print(response.status_code, resp_data)      ####################
-        checklist = check_tasks(rule, accept_simple_result, checklist)
+        # print(response.status_code, resp_data)      ####################
+        # checklist = check_tasks(rule, accept_simple_result, checklist)
     return checklist
 
 
@@ -50,7 +50,7 @@ while True:
     checklist = check_tasks(test_request, accept_simple_result, checklist)
     tasks_left = len(checklist)
     if tasks_left:
-        print(tasks_left, 'tasks left after',
+        print('\n', tasks_left, 'tasks left after',
               datetime.datetime.now() - start, '\n')
     else:
         break
