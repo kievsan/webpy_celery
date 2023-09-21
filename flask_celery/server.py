@@ -37,6 +37,10 @@ flask_app.add_url_rule('/example/',
                  view_func=views.ExampleView.as_view('example_add'),
                  methods=['POST'])
 
+flask_app.add_url_rule('/example/<file>',
+                 view_func=views.ExampleView.as_view('example_get'),
+                 methods=['GET'])
+
 flask_app.add_url_rule('/upscale/',
                  view_func=views.TaskView.as_view('task_add'),
                  methods=['POST'])

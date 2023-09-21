@@ -2,7 +2,7 @@ import base64
 import os
 import uuid
 
-from flask import jsonify, request, send_file
+from flask import jsonify, request, send_file, abort
 from flask.views import MethodView
 import redis
 
@@ -51,6 +51,12 @@ class ExampleView(MethodView):
         redis_dict.mset({task.id: upscale_filename})
         return jsonify({'task_id': task.id})
 
+    def get(self, file):
+        file_path = os.path.join(conf.CELERY_STORAGE, file)
+        print('start def ExampleView.get:\t', file_path)  #############
+        assert os.path.exists(file_path)
+        return send_file(file_path, mimetype='image/gif')
+
     def get_path(self, field):
         print('start def ExampleView.get_path')  #############
         filename = request.json.get(field)
@@ -67,13 +73,15 @@ class ExampleView(MethodView):
 
 class TaskView(MethodView):
     def get(self, task_id):
-        print('start def TaskView.get')  #############
+        file_rule = request.args.get('file_rule')
+        file_rule = file_rule if file_rule else 'processed'
+        print('start def TaskView.get:\t', file_rule)  #############
         result = get_task_result(task_id)
         status = result.status
         message = {'status': status}
         if status == 'SUCCESS':
             file_name = redis_dict.get(task_id)
-            message.update({'link': f'{request.url_root}processed/{file_name.decode()}'})
+            message.update({'link': f'{request.url_root}{file_rule}/{file_name.decode()}'})
         return jsonify(message)
 
     def post(self):
@@ -92,8 +100,11 @@ class TaskView(MethodView):
 
 class ImageView(MethodView):
     def get(self, file):
-        file_path = os.path.join(os.path.join(
-            os.getcwd()), conf.CELERY_STORAGE, file)
+        file_path = os.path.join(conf.CELERY_STORAGE, file)
         print('start def ImageView.get:\t', file_path)  #############
         assert os.path.exists(file_path)
         return send_file(file_path, mimetype='image/gif')
+        # try:
+        #     return send_file(file_path, mimetype='image/gif')
+        # except FileNotFoundError:
+        #     abort(404)
