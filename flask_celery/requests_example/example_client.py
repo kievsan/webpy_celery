@@ -46,13 +46,13 @@ while True:
                           image.headers['Content-Disposition'])[0]
         destination = os.path.join(os.path.expanduser('~'), name)
         print('writing...', destination)    ##############
-        with open(destination, 'wb') as fp:
+        with open(destination, 'wb') as f:
             while True:
                 chunk = image.raw.read(1024)
                 if not chunk:
                     break
-                fp.write(chunk)
-        print('writing...SUCCESS')    ##############
+                f.write(chunk)
+        print('writing... SUCCESS!')    ##############
         break
 
     elif response_status == 'FAILURE':
