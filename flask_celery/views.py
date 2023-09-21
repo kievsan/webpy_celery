@@ -52,6 +52,7 @@ class ExampleView(MethodView):
         return jsonify({'task_id': task.id})
 
     def get(self, file):
+        # Отправляем клиенту файл с диска
         file_path = os.path.join(conf.CELERY_STORAGE, file)
         print('start def ExampleView.get:\t', file_path)  #############
         assert os.path.exists(file_path)
