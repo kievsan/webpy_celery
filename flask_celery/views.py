@@ -55,8 +55,12 @@ class ExampleView(MethodView):
         # Отправляем клиенту файл с диска
         file_path = os.path.join(conf.CELERY_STORAGE, file)
         print('start def ExampleView.get:\t', file_path)  #############
-        assert os.path.exists(file_path)
-        return send_file(file_path, mimetype='image/gif')
+        # assert os.path.exists(file_path)
+        try:
+            return send_file(file_path, mimetype='image/gif', as_attachment=True)
+        except FileNotFoundError:
+            abort(404)
+
 
     def get_path(self, field):
         print('start def ExampleView.get_path')  #############

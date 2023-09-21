@@ -36,9 +36,9 @@ while True:
         status_code = image.status_code
         assert status_code == 200
         print(image.status_code,
-              image.request.method,
-              # image.content
+              image.request.method
               )         ###################
+        # image.content
         break
 
     elif response_status == 'FAILURE':
