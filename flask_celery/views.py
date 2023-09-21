@@ -74,8 +74,7 @@ class ExampleView(MethodView):
 
 class TaskView(MethodView):
     def get(self, task_id):
-        file_rule = request.args.get('file_rule')
-        file_rule = file_rule if file_rule else 'processed'
+        file_rule = request.args.get('file_rule', 'processed')
         print('start def TaskView.get:\t', file_rule)  #############
         result = get_task_result(task_id)
         status = result.status
