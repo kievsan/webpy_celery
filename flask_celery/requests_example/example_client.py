@@ -1,7 +1,9 @@
 #   В РАЗРАБОТКЕ
-from pprint import pprint
 
 import requests
+import os
+import re
+
 import datetime
 import time
 
@@ -30,15 +32,27 @@ while True:
     if response_status == 'SUCCESS':
         # получаем ссылку на файл
         url = resp_data.get('link')
-        # получаем файл
-        image = requests.get(url)
-        # тестируем
+        # запрашиваем файл
+        image = requests.get(url, stream=True)
+        # проверяем ответ
         status_code = image.status_code
         assert status_code == 200
         print(image.status_code,
               image.request.method
               )         ###################
-        # image.content
+
+        # читаем и сохраняем файл
+        name = re.findall('filename=(.+)',
+                          image.headers['Content-Disposition'])[0]
+        destination = os.path.join(os.path.expanduser('~'), name)
+        print('writing...', destination)    ##############
+        with open(destination, 'wb') as fp:
+            while True:
+                chunk = image.raw.read(1024)
+                if not chunk:
+                    break
+                fp.write(chunk)
+        print('writing...SUCCESS')    ##############
         break
 
     elif response_status == 'FAILURE':

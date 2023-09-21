@@ -57,7 +57,8 @@ class ExampleView(MethodView):
         print('start def ExampleView.get:\t', file_path)  #############
         # assert os.path.exists(file_path)
         try:
-            return send_file(file_path, mimetype='image/gif', as_attachment=True)
+            return send_file(file_path, mimetype='image/gif',
+                             as_attachment=True)
         except FileNotFoundError:
             abort(404)
 
