@@ -1,5 +1,3 @@
-#   В РАЗРАБОТКЕ
-
 import requests
 import os
 import re
@@ -40,19 +38,22 @@ while True:
         print(image.status_code,
               image.request.method
               )         ###################
-
         # читаем и сохраняем файл
         name = re.findall('filename=(.+)',
                           image.headers['Content-Disposition'])[0]
         destination = os.path.join(os.path.expanduser('~'), name)
         print('writing...', destination)    ##############
-        with open(destination, 'wb') as f:
-            while True:
-                chunk = image.raw.read(1024)
-                if not chunk:
-                    break
-                f.write(chunk)
-        print('writing... SUCCESS!')    ##############
+        result = 'SUCCESS'
+        try:
+            with open(destination, 'wb') as f:
+                while True:
+                    chunk = image.raw.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+        except OSError as err:
+            result = f'FAILURE:\n\t{err}'
+        print(f'writing... {result}!')    ##############
         break
 
     elif response_status == 'FAILURE':
